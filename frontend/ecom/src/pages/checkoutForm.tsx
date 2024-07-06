@@ -27,9 +27,10 @@ const CheckoutForm = ({ clientSecret }:any) => {
         },
       });
 
-      if (result) {
-        console.error(result);
+      if (result.error) {
+        console.error(result.error);
       } else {
+        
         const res = await axios.post('http://localhost:8000/api/v1/transaction/user', {
             email: localStorage.getItem("email"),
             paymentStatus: 'paid',
