@@ -16,11 +16,11 @@ const CheckoutPage = () => {
     history('/payment');
   };
 
-  return (
-    <div>
-      <h2>Checkout Page</h2>
-      <input type="email" value={email} onChange={handleEmailChange} placeholder="Enter your email" />
-      <button onClick={handleContinue}>Continue</button>
+  return ( 
+    <div className='flex flex-col mt-20 justify-center align-middle items-center'>
+      <h2 className='font-semibold '>Enter your email to proceed</h2>
+      <input type="email" value={email} className='mt-4 border-2 rounded-sm w-64' onChange={handleEmailChange} placeholder="Enter your email" />
+      <button className='text-white mt-6 bg-black rounded-md w-44' onClick={handleContinue}>proceed to checkout</button>
       
     </div>
   );

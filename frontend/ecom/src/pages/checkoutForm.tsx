@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { CardElement, useStripe, useElements } from '@stripe/react-stripe-js';
 import axios from 'axios';
 import { useSelector } from 'react-redux';
@@ -6,6 +6,7 @@ import { useSelector } from 'react-redux';
 const CheckoutForm = ({ clientSecret }:any) => {
   const stripe = useStripe();
   const elements = useElements();
+  const [success ,setsuccess] = useState("")
   //@ts-ignore
   const cartstate = useSelector((state) => state.cart);
   
@@ -26,8 +27,8 @@ const CheckoutForm = ({ clientSecret }:any) => {
         },
       });
 
-      if (result.error) {
-        console.error(result.error.message);
+      if (result) {
+        console.error(result);
       } else {
         const res = await axios.post('http://localhost:8000/api/v1/transaction/user', {
             email: localStorage.getItem("email"),
@@ -38,7 +39,12 @@ const CheckoutForm = ({ clientSecret }:any) => {
       
           console.log(res.data); // Log the response from your backend
           // Example: Show success message to user
-         if(res.data) alert('Order placed successfully!');
+         if(res.data) {
+          alert(' Your Order placed successfully ' );
+          setsuccess(' Your Order placed successfully ')
+         }
+
+
          
          
        
@@ -49,14 +55,42 @@ const CheckoutForm = ({ clientSecret }:any) => {
   };
 
   return (
-    <div className="w-6/12 mt-20 flex flex-col justify-center align-start text-xl">
-      <form onSubmit={handleSubmit}>
-        <CardElement />
-        <button type="submit" className="mt-6 ml-10 bg-black text-white w-16" disabled={!stripe}>
-          Pay
-        </button>
-      </form>
-    </div>
+    <div className="w-full max-w-md mx-auto mt-20 p-8 bg-white rounded-lg shadow-lg">
+    <h1 className="text-2xl font-bold text-center text-purple-700 mb-6">Stripe Checkout</h1>
+    <form onSubmit={handleSubmit}>
+      <div className="mb-4">
+        <h1 className='mb-8 text-gray-400 text-l'> Email : {localStorage.getItem("email")}</h1>
+        <CardElement
+          options={{
+            style: {
+              base: {
+                fontSize: '16px',
+                color: '#424770',
+                '::placeholder': {
+                  color: '#aab7c4',
+                },
+              },
+              invalid: {
+                color: '#9e2146',
+              },
+            },
+          }}
+        />
+      </div>
+      <button
+        type="submit"
+        className="w-full bg-purple-700 text-white py-2 px-4 rounded-lg shadow-lg hover:bg-purple-600 disabled:bg-gray-400 disabled:cursor-not-allowed"
+        disabled={!stripe}
+      >
+        Pay
+      </button>
+      {/* {paymentError && <p className="text-red-500 mt-2">{paymentError}</p>}
+      {paymentSuccess && <p className="text-green-500 mt-2">Payment successful!</p>} */}
+      <p className="text-green-500 mt-2">{success}</p>
+    </form>
+    
+  </div>
+
   );
 };
 
